@@ -1,6 +1,6 @@
-using Defender.ServiceTemplate.Application;
-using Defender.ServiceTemplate.Infrastructure;
-using Defender.ServiceTemplate.WebUI;
+using Defender.GeneralTestingService.Application;
+using Defender.GeneralTestingService.Infrastructure;
+using Defender.GeneralTestingService.WebUI;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -20,7 +20,7 @@ builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
-builder.Services.AddWebUIServices(builder.Environment, builder.Configuration);
+builder.Services.AddWebApiServices(builder.Environment, builder.Configuration);
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
@@ -35,6 +35,9 @@ if (builder.Environment.IsLocalOrDevelopment())
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
     });
+
+    app.UseDefaultFiles();
+    app.UseStaticFiles();
 }
 else
 {

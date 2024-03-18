@@ -1,6 +1,6 @@
 ﻿using Defender.Common.Entities;
 
-namespace Defender.ServiceTemplate.Domain.Entities;
+namespace Defender.GeneralTestingService.Domain.Entities;
 
 public class DomainModel : IBaseModel
 {

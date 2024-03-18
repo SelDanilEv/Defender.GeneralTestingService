@@ -1,17 +1,14 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Defender.ServiceTemplate.Application.Modules.Home.Queries;
 using Defender.Common.Attributes;
 using Defender.Common.Models;
-using Defender.Common.Enums;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using Defender.Common.Interfaces;
 using Defender.Common.Helpers;
 
-namespace Defender.ServiceTemplate.WebUI.Controllers.V1;
+namespace Defender.GeneralTestingService.WebUI.Controllers.V1;
 
 public class HomeController : BaseApiController
 {
@@ -35,30 +32,18 @@ public class HomeController : BaseApiController
         return new { Status = "Healthy" };
     }
 
+    public record AuthCheckResponse(System.Guid UserId, string HighestRole);
+
     [HttpGet("authorization/check")]
     [Auth(Roles.User)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(AuthCheckResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<string> AuthorizationCheckAsync()
+    public async Task<AuthCheckResponse> AuthorizationCheckAsync()
     {
+        var userId = _accountAccessor.GetAccountId();
         var userRoles = _accountAccessor.GetRoles();
 
-        return RolesHelper.GetHighestRole(userRoles);
-    }
-
-    [Auth(Roles.SuperAdmin)]
-    [HttpGet("configuration")]
-    [ProducesResponseType(typeof(Dictionary<string, string>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<Dictionary<string, string>> GetConfigurationAsync(ConfigurationLevel configurationLevel)
-    {
-        var query = new GetConfigurationQuery()
-        {
-            Level = configurationLevel
-        };
-
-        return await ProcessApiCallWithoutMappingAsync<GetConfigurationQuery, Dictionary<string, string>>(query);
+        return new AuthCheckResponse(userId, RolesHelper.GetHighestRole(userRoles));
     }
 }

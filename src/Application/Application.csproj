@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
-        <RootNamespace>Defender.ServiceTemplate.Application</RootNamespace>
-        <AssemblyName>Defender.ServiceTemplate.Application</AssemblyName>
+        <RootNamespace>Defender.GeneralTestingService.Application</RootNamespace>
+        <AssemblyName>Defender.GeneralTestingService.Application</AssemblyName>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
@@ -28,7 +28,6 @@
 
     <ItemGroup>
       <Folder Include="Common\Behaviours\" />
-      <Folder Include="Models\" />
     </ItemGroup>
 
 </Project>

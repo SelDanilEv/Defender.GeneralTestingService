@@ -1,4 +1,4 @@
-﻿namespace Defender.ServiceTemplate.Application.Helpers;
+﻿namespace Defender.GeneralTestingService.Application.Helpers;
 
 public static class SimpleLogger
 {

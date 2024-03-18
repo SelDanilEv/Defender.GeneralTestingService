@@ -1,6 +1,6 @@
 using Defender.Common.Mapping;
 
-namespace Defender.ServiceTemplate.Application.Common.Mappings;
+namespace Defender.GeneralTestingService.Application.Common.Mappings;
 
 public class MappingProfile : BaseMappingProfile
 {
