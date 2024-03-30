@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ProblemDetailsOptions = Hellang.Middleware.ProblemDetails.ProblemDetailsOptions;
@@ -47,7 +46,7 @@ public static class ConfigureServices
         services.AddControllers().AddJsonOptions(x =>
         {
             x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            x.JsonSerializerOptions.IgnoreNullValues = true;
+            x.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
         });
 
         services.Configure<ApiBehaviorOptions>(options =>
