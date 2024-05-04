@@ -1,5 +1,6 @@
 ﻿using Defender.GeneralTestingService.Application.Models;
 using Defender.GeneralTestingService.Infrastructure.Clients.Portal;
+using Defender.GeneralTestingService.Infrastructure.Steps.Interfaces;
 
 namespace Defender.GeneralTestingService.Infrastructure.Steps;
 
@@ -18,7 +19,7 @@ public class VerifyWalletStep : IStep
     {
         try
         {
-            var walletInfo = await _portalWrapper.GetWalletInfo();
+            var walletInfo = await _portalWrapper.GetWalletInfoAsync();
 
             if (walletInfo == null)
             {

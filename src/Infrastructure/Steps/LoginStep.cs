@@ -1,6 +1,7 @@
 ﻿using Defender.GeneralTestingService.Application.Models;
 using Defender.GeneralTestingService.Infrastructure.Clients.Portal;
 using Defender.GeneralTestingService.Infrastructure.Helpers.LocalSecretHelper;
+using Defender.GeneralTestingService.Infrastructure.Steps.Interfaces;
 
 namespace Defender.GeneralTestingService.Infrastructure.Steps;
 
@@ -19,7 +20,7 @@ public class LoginStep : IStep
     {
         try
         {
-            var session = await _portalWrapper.Login(
+            var session = await _portalWrapper.LoginAsync(
                 await LocalSecretsHelper.GetSecretAsync(LocalSecret.Testing_Email),
                 await LocalSecretsHelper.GetSecretAsync(LocalSecret.Testing_Password));
 
@@ -34,7 +35,7 @@ public class LoginStep : IStep
                 throw new Exception("Invalid token");
             }
 
-            var highestRole = await _portalWrapper.AuthCheck();
+            var highestRole = await _portalWrapper.AuthCheckAsync();
 
             if(highestRole == null || string.IsNullOrEmpty(highestRole)) 
             {

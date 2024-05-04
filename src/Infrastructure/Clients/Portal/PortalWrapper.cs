@@ -3,7 +3,11 @@ using Defender.Common.Clients.Portal;
 using Defender.Common.Clients.Wallet;
 using Defender.Common.Interfaces;
 using Defender.Common.Wrapper.Internal;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json;
 using LoginWithPasswordCommand = Defender.Common.Clients.Portal.LoginWithPasswordCommand;
+using StartTransferTransactionCommand = Defender.Common.Clients.Portal.StartTransferTransactionCommand;
+using Currency = Defender.Common.Clients.Portal.Currency;
 
 namespace Defender.GeneralTestingService.Infrastructure.Clients.Portal;
 
@@ -23,7 +27,7 @@ public class PortalWrapper : BaseInternalSwaggerWrapper, IPortalWrapper
         _mapper = mapper;
     }
 
-    public async Task<Session> Login(string email, string password)
+    public async Task<Session> LoginAsync(string email, string password)
     {
         return await ExecuteSafelyAsync(async () =>
         {
@@ -37,7 +41,7 @@ public class PortalWrapper : BaseInternalSwaggerWrapper, IPortalWrapper
         }, AuthorizationType.User);
     }
 
-    public async Task<string> AuthCheck()
+    public async Task<string> AuthCheckAsync()
     {
         return await ExecuteSafelyAsync(async () =>
         {
@@ -45,12 +49,46 @@ public class PortalWrapper : BaseInternalSwaggerWrapper, IPortalWrapper
         }, AuthorizationType.User);
     }
 
-    public async Task<PortalWalletInfoDto> GetWalletInfo()
+    public async Task<PortalWalletInfoDto> GetWalletInfoAsync()
     {
         return await ExecuteSafelyAsync(async () =>
         {
             return await _portalApiClient.InfoAsync(new GetWalletInfoQuery());
         }, AuthorizationType.User);
     }
-    
+
+    public async Task<PortalTransactionDto> TransferMoneyAsync(
+        int walletNumber,
+        int amount,
+        Currency currency)
+    {
+        return await ExecuteSafelyAsync(async () =>
+        {
+            var command = new StartTransferTransactionCommand()
+            {
+                WalletNumber = walletNumber,
+                Amount = amount,
+                Currency = currency
+            };
+
+            return await _portalApiClient.TransferAsync(command);
+        }, AuthorizationType.User);
+    }
+
+    public async Task<PortalTransactionDto> GetLatestTransactionAsync()
+    {
+        return await ExecuteSafelyAsync(async () =>
+        {
+            var transactions = await _portalApiClient.HistoryAsync(0, 1);
+
+            if (transactions == null
+            || transactions.Items == null 
+            || !transactions.Items.Any())
+            {
+                throw new Exception("No transaction");
+            }
+
+            return transactions.Items.First();
+        }, AuthorizationType.User);
+    }
 }

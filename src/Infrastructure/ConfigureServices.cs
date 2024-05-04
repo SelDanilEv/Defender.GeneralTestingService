@@ -57,6 +57,7 @@ public static class ConfigureServices
     {
         services.AddSingleton<LoginStep>();
         services.AddSingleton<VerifyWalletStep>();
+        services.AddSingleton<TransferMoneyStep>();
 
         services.AddSingleton<RegressionSet>();
 

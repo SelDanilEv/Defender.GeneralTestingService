@@ -4,7 +4,12 @@ namespace Defender.GeneralTestingService.Infrastructure.Clients.Portal;
 
 public interface IPortalWrapper
 {
-    Task<Session> Login(string username, string password);
-    Task<string> AuthCheck();
-    Task<PortalWalletInfoDto> GetWalletInfo();
+    Task<Session> LoginAsync(string username, string password);
+    Task<string> AuthCheckAsync();
+    Task<PortalWalletInfoDto> GetWalletInfoAsync();
+    Task<PortalTransactionDto> TransferMoneyAsync(
+        int walletNumber,
+        int amount,
+        Currency currency);
+    Task<PortalTransactionDto> GetLatestTransactionAsync();
 }

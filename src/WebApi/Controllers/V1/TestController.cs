@@ -6,21 +6,18 @@ using System.Threading.Tasks;
 using Defender.GeneralTestingService.Application.Models;
 using Defender.GeneralTestingService.Application.Common.Interfaces;
 using System.Collections.Generic;
+using Defender.Common.Helpers;
+using Microsoft.Extensions.Configuration;
 
 namespace Defender.GeneralTestingService.WebUI.Controllers.V1;
 
-public class TestController : BaseApiController
+public class TestController(
+    IConfiguration configuration,
+    IMediator mediator,
+    IMapper mapper,
+    ITestStartingService testStartingService)
+        : BaseApiController(mediator, mapper)
 {
-    private readonly ITestStartingService _testStartingService;
-
-    public TestController(
-        IMediator mediator, 
-        IMapper mapper,
-        ITestStartingService testStartingService) 
-        : base(mediator, mapper)
-    {
-        _testStartingService = testStartingService;
-    }
 
     [HttpPost("start")]
     //[Auth(Roles.Admin)]
@@ -30,9 +27,18 @@ public class TestController : BaseApiController
     {
         var instance = TestInstance.Init(HttpContext);
 
-        await _testStartingService.StartFullTestAsync(instance);
+        await testStartingService.StartFullTestAsync(instance);
 
         return instance.GetLog;
     }
 
+    [HttpGet("get/superadmin-jwt")]
+    //[Auth(Roles.Admin)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<string> GetSuperAdminJwtAsync([FromQuery] int minutes = 1)
+    {
+        return await InternalJwtHelper.GenerateInternalJWTAsync(
+            configuration["JwtTokenIssuer"] ?? string.Empty, minutes);
+    }
 }

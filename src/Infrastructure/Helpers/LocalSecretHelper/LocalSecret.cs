@@ -3,5 +3,7 @@
 public enum LocalSecret
 {
     Testing_Email,
-    Testing_Password
+    Testing_Password,
+
+    Testing_TransferWalletNumber
 }
