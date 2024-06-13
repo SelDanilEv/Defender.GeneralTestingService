@@ -1,35 +1,23 @@
-﻿using AutoMapper;
-using Defender.Common.Clients.Portal;
-using Defender.Common.Clients.Wallet;
+﻿using Defender.Common.Clients.Portal;
+using Defender.Common.Helpers;
 using Defender.Common.Interfaces;
 using Defender.Common.Wrapper.Internal;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json;
+using Defender.GeneralTestingService.Application.Clients.Portal;
+using Defender.GeneralTestingService.Domain.Enums;
 using LoginWithPasswordCommand = Defender.Common.Clients.Portal.LoginWithPasswordCommand;
 using StartTransferTransactionCommand = Defender.Common.Clients.Portal.StartTransferTransactionCommand;
-using Currency = Defender.Common.Clients.Portal.Currency;
 
 namespace Defender.GeneralTestingService.Infrastructure.Clients.Portal;
 
-public class PortalWrapper : BaseInternalSwaggerWrapper, IPortalWrapper
+public class PortalWrapper(
+    IAuthenticationHeaderAccessor authenticationHeaderAccessor,
+    IPortalApiClient portalApiClient) : BaseInternalSwaggerWrapper(
+        portalApiClient,
+        authenticationHeaderAccessor), IPortalWrapper
 {
-    private readonly IMapper _mapper;
-    private readonly IPortalApiClient _portalApiClient;
-
-    public PortalWrapper(
-        IAuthenticationHeaderAccessor authenticationHeaderAccessor,
-        IPortalApiClient portalApiClient,
-        IMapper mapper) : base(
-            portalApiClient,
-            authenticationHeaderAccessor)
+    public async Task<SessionDto> LoginAsync(string email, string password)
     {
-        _portalApiClient = portalApiClient;
-        _mapper = mapper;
-    }
-
-    public async Task<Session> LoginAsync(string email, string password)
-    {
-        return await ExecuteSafelyAsync(async () =>
+        return await ExecuteUnsafelyAsync(async () =>
         {
             var command = new LoginWithPasswordCommand()
             {
@@ -37,23 +25,23 @@ public class PortalWrapper : BaseInternalSwaggerWrapper, IPortalWrapper
                 Password = password
             };
 
-            return await _portalApiClient.LoginAsync(command);
+            return await portalApiClient.Login2Async(command);
         }, AuthorizationType.User);
     }
 
     public async Task<string> AuthCheckAsync()
     {
-        return await ExecuteSafelyAsync(async () =>
+        return await ExecuteUnsafelyAsync(async () =>
         {
-            return (await _portalApiClient.CheckAsync()).HighestRole;
+            return (await portalApiClient.CheckAsync()).HighestRole.ToString();
         }, AuthorizationType.User);
     }
 
     public async Task<PortalWalletInfoDto> GetWalletInfoAsync()
     {
-        return await ExecuteSafelyAsync(async () =>
+        return await ExecuteUnsafelyAsync(async () =>
         {
-            return await _portalApiClient.InfoAsync(new GetWalletInfoQuery());
+            return await portalApiClient.InfoAsync(new GetWalletInfoQuery());
         }, AuthorizationType.User);
     }
 
@@ -62,33 +50,53 @@ public class PortalWrapper : BaseInternalSwaggerWrapper, IPortalWrapper
         int amount,
         Currency currency)
     {
-        return await ExecuteSafelyAsync(async () =>
+        return await ExecuteUnsafelyAsync(async () =>
         {
             var command = new StartTransferTransactionCommand()
             {
                 WalletNumber = walletNumber,
                 Amount = amount,
-                Currency = currency
+                Currency = MappingHelper.MapEnum
+                    (currency, StartTransferTransactionCommandCurrency.Unknown)
             };
 
-            return await _portalApiClient.TransferAsync(command);
+            return await portalApiClient.TransferAsync(command);
         }, AuthorizationType.User);
     }
 
-    public async Task<PortalTransactionDto> GetLatestTransactionAsync()
+    public async Task<PortalTransactionDto> RechargeMoneyAsync(
+        int walletNumber,
+        int amount,
+        Currency currency)
     {
-        return await ExecuteSafelyAsync(async () =>
+        return await ExecuteUnsafelyAsync(async () =>
         {
-            var transactions = await _portalApiClient.HistoryAsync(0, 1);
+            var command = new StartRechargeTransactionCommand()
+            {
+                WalletNumber = walletNumber,
+                Amount = amount,
+                Currency = MappingHelper.MapEnum
+                    (currency, StartRechargeTransactionCommandCurrency.Unknown)
+            };
+
+            return await portalApiClient.RechargeAsync(command);
+        }, AuthorizationType.Service);
+    }
+
+    public async Task<List<PortalTransactionDto>> GetLatest50TransactionsAsync()
+    {
+        return await ExecuteUnsafelyAsync(async () =>
+        {
+            var transactions = await portalApiClient.HistoryAsync(null, 0, 50);
 
             if (transactions == null
-            || transactions.Items == null 
+            || transactions.Items == null
             || !transactions.Items.Any())
             {
                 throw new Exception("No transaction");
             }
 
-            return transactions.Items.First();
+            return transactions.Items.ToList();
         }, AuthorizationType.User);
     }
 }

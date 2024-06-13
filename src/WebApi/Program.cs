@@ -1,11 +1,11 @@
+using Defender.Common.Extension;
 using Defender.GeneralTestingService.Application;
 using Defender.GeneralTestingService.Infrastructure;
-using Defender.GeneralTestingService.WebUI;
+using Defender.GeneralTestingService.WebApi;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Defender.Common.Exstension;
 using Microsoft.Extensions.Logging;
 using Serilog;
 

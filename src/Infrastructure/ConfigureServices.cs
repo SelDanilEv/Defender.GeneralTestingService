@@ -1,13 +1,10 @@
 ﻿using System.Reflection;
 using Defender.Common.Clients.Portal;
-using Defender.GeneralTestingService.Application.Common.Interfaces;
+using Defender.GeneralTestingService.Application.Clients.Portal;
 using Defender.GeneralTestingService.Application.Common.Interfaces.Repositories;
 using Defender.GeneralTestingService.Application.Configuration.Options;
 using Defender.GeneralTestingService.Infrastructure.Clients.Portal;
 using Defender.GeneralTestingService.Infrastructure.Repositories.DomainModels;
-using Defender.GeneralTestingService.Infrastructure.Services;
-using Defender.GeneralTestingService.Infrastructure.Steps;
-using Defender.GeneralTestingService.Infrastructure.Steps.Sets;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -23,11 +20,9 @@ public static class ConfigureServices
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
         services
-            .RegisterServices()
             .RegisterRepositories()
             .RegisterApiClients(configuration)
-            .RegisterClientWrappers()
-            .RegisterSteps();
+            .RegisterClientWrappers();
 
         return services;
     }
@@ -39,27 +34,9 @@ public static class ConfigureServices
         return services;
     }
 
-    private static IServiceCollection RegisterServices(this IServiceCollection services)
-    {
-        services.AddTransient<ITestStartingService, TestStartingService>();
-
-        return services;
-    }
-
     private static IServiceCollection RegisterRepositories(this IServiceCollection services)
     {
         services.AddSingleton<IDomainModelRepository, DomainModelRepository>();
-
-        return services;
-    }
-
-    private static IServiceCollection RegisterSteps(this IServiceCollection services)
-    {
-        services.AddSingleton<LoginStep>();
-        services.AddSingleton<VerifyWalletStep>();
-        services.AddSingleton<TransferMoneyStep>();
-
-        services.AddSingleton<RegressionSet>();
 
         return services;
     }

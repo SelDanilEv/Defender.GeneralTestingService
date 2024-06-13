@@ -1,26 +1,19 @@
-﻿using Defender.GeneralTestingService.Application.Models;
-using Defender.GeneralTestingService.Infrastructure.Clients.Portal;
-using Defender.GeneralTestingService.Infrastructure.Helpers.LocalSecretHelper;
-using Defender.GeneralTestingService.Infrastructure.Steps.Interfaces;
+﻿using Defender.GeneralTestingService.Application.Helpers.LocalSecretHelper;
+using Defender.GeneralTestingService.Application.Models;
+using Defender.GeneralTestingService.Application.Steps.Interfaces;
+using Defender.GeneralTestingService.Application.Clients.Portal;
 
-namespace Defender.GeneralTestingService.Infrastructure.Steps;
+namespace Defender.GeneralTestingService.Application.Steps;
 
-public class LoginStep : IStep
+public class LoginStep(IPortalWrapper portalWrapper) : IStep
 {
     private const string StepName = "Login";
-
-    private readonly IPortalWrapper _portalWrapper;
-
-    public LoginStep(IPortalWrapper portalWrapper)
-    {
-        _portalWrapper = portalWrapper;
-    }
 
     public async Task<TestInstance> StartAsync(TestInstance instance)
     {
         try
         {
-            var session = await _portalWrapper.LoginAsync(
+            var session = await portalWrapper.LoginAsync(
                 await LocalSecretsHelper.GetSecretAsync(LocalSecret.Testing_Email),
                 await LocalSecretsHelper.GetSecretAsync(LocalSecret.Testing_Password));
 
@@ -35,9 +28,9 @@ public class LoginStep : IStep
                 throw new Exception("Invalid token");
             }
 
-            var highestRole = await _portalWrapper.AuthCheckAsync();
+            var highestRole = await portalWrapper.AuthCheckAsync();
 
-            if(highestRole == null || string.IsNullOrEmpty(highestRole)) 
+            if (highestRole == null || string.IsNullOrEmpty(highestRole))
             {
                 throw new Exception("No roles");
             }

@@ -10,7 +10,7 @@ using Defender.Common.DTOs;
 using Defender.Common.Modules.Home.Queries;
 using System.Collections.Generic;
 
-namespace Defender.GeneralTestingService.WebUI.Controllers.V1;
+namespace Defender.GeneralTestingService.WebApi.Controllers.V1;
 
 public partial class HomeController(
         IMediator mediator,

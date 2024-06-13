@@ -1,10 +1,9 @@
 ﻿using Defender.GeneralTestingService.Application.Common.Interfaces;
 using Defender.GeneralTestingService.Application.Models;
-using Defender.GeneralTestingService.Infrastructure.Steps;
-using Defender.GeneralTestingService.Infrastructure.Steps.Interfaces;
-using Defender.GeneralTestingService.Infrastructure.Steps.Sets;
+using Defender.GeneralTestingService.Application.Steps.Interfaces;
+using Defender.GeneralTestingService.Application.Steps.Sets;
 
-namespace Defender.GeneralTestingService.Infrastructure.Services;
+namespace Defender.GeneralTestingService.Application.Services;
 
 public class TestStartingService : ITestStartingService
 {
@@ -19,7 +18,7 @@ public class TestStartingService : ITestStartingService
     {
         var tasks = new List<Task>();
 
-        foreach(var step in _steps)
+        foreach (var step in _steps)
         {
             if (step is IParallelStep)
             {

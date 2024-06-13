@@ -5,9 +5,9 @@ using System.Text.Json.Serialization;
 using Defender.Common.Enums;
 using Defender.Common.Errors;
 using Defender.Common.Exceptions;
-using Defender.Common.Exstension;
+using Defender.Common.Extension;
 using Defender.Common.Helpers;
-using Defender.GeneralTestingService.Application.Configuration.Exstension;
+using Defender.GeneralTestingService.Application.Configuration.Extension;
 using FluentValidation.AspNetCore;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -20,7 +20,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ProblemDetailsOptions = Hellang.Middleware.ProblemDetails.ProblemDetailsOptions;
 
-namespace Defender.GeneralTestingService.WebUI;
+namespace Defender.GeneralTestingService.WebApi;
 
 public static class ConfigureServices
 {

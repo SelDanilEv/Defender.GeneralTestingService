@@ -1,4 +1,4 @@
-﻿namespace Defender.GeneralTestingService.Infrastructure.Helpers.LocalSecretHelper;
+﻿namespace Defender.GeneralTestingService.Application.Helpers.LocalSecretHelper;
 
 public enum LocalSecret
 {

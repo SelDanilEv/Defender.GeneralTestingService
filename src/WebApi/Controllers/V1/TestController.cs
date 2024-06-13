@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using Defender.Common.Helpers;
 using Microsoft.Extensions.Configuration;
 
-namespace Defender.GeneralTestingService.WebUI.Controllers.V1;
+namespace Defender.GeneralTestingService.WebApi.Controllers.V1;
 
 public class TestController(
     IConfiguration configuration,

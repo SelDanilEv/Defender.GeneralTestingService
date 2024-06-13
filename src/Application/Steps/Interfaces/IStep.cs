@@ -1,6 +1,6 @@
 ﻿using Defender.GeneralTestingService.Application.Models;
 
-namespace Defender.GeneralTestingService.Infrastructure.Steps.Interfaces;
+namespace Defender.GeneralTestingService.Application.Steps.Interfaces;
 
 public interface IStep
 {
